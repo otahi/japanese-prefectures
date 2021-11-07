@@ -1,17 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja_JP">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="./style.css">
-  <title>Japanese Prefectures</title>
+  <link rel="stylesheet" href="https://unpkg.com/x-data-spreadsheet@1.1.5/dist/xspreadsheet.css">
+  <script src="https://unpkg.com/x-data-spreadsheet@1.1.5/dist/xspreadsheet.js"></script>
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+
+  <title>都道府県地図グラフ</title>
 </head>
 <body>
+  <h1>都道府県地図グラフ</h1>
+  <div id="navi">
+    <label for="selector">Select map</label>
+    <select name="selector" id="selector"></select>
+    <label for="head">Color</label>
+    <input type="color" id="color" name="color" value="#0000FF">
+    <button id="dl_svg">Download</button>
+  </div>
 
-  <div class="map"></div>
-  <div class="map"></div>
-  <div class="map"></div>
-  <div class="map"></div>
+  <div id="container">
+    <div id="table"></div>
+    <div id="map"></div>
+  </div>
 
   <script src="./app.js"></script>
 </body>
