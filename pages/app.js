@@ -82,6 +82,7 @@ const maps = [
     { "name": "Polygon", "location": "../map-polygon.svg" },
     { "name": "Circle", "location": "../map-circle.svg" },
 ];
+const map_names = { "Full": 0, "Mobile": 1, "Polygon": 2, "Circle": 3 };
 const selector = document.querySelector('#selector');
 
 selector.append(...maps.map(map => {
@@ -91,8 +92,11 @@ selector.append(...maps.map(map => {
     return option;
 }));
 
+const hash = new URLSearchParams(window.location.hash);
 const color_picker = document.querySelector('#color');
-let color = "#0000FF"
+let color = '#' + (hash.get('color') || '0000FF');
+color_picker.value = color;
+
 color_picker.addEventListener('change', () => {
     color = color_picker.value;
     drawMap();
@@ -122,17 +126,42 @@ selector.addEventListener('change', async(e) => {
     selectMap(map);
 });
 
-selectMap();
+selectMap(maps[map_names[hash.get('map')]] || maps[0]);
 
 const table = x_spreadsheet('#table', { showToolbar: false, showBottomBar: false, row: { len: 48 }, col: { len: 2 } }).change(drawMap);
 document.querySelector('.x-spreadsheet-bottombar').style.display = 'none';
 
+// parameters
+// /pages/#title=都道府県地図グラフ&map=Full&color=0000ff&data=都道府県;法定人口:東京都;13,515,271:神奈川県;9,126,214
+// /pages/#title=東京・神奈川&data=東京都;124.5:神奈川県;500
 
-table.cellText(0, 0, 'Pref').cellText(0, 1, 'Data');
 
-initial_values.forEach((pref, i) => {
-    table.cellText(i, 0, pref[0]).cellText(i, 1, pref[1]);
+function sanitize(str) {
+    return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+const title = sanitize(hash.get('title'));
+if (title.length > 0) {
+    document.querySelector('title').innerHTML = title;
+    document.querySelector('#title').innerHTML = title;
+}
+
+const params = hash.get('data') || '';
+if (params.length > 0) {
+    params.split(':').forEach((param, i) => {
+        const [k, v] = param.split(';');
+        table.cellText(i, 0, k).cellText(i, 1, v);
+    });
+} else {
+    initial_values.forEach((pref, i) => {
+        table.cellText(i, 0, pref[0]).cellText(i, 1, pref[1]);
+    });
+}
+
+hash.forEach((value, key) => {
+    console.log("key:" + key + ",value:" + value);
 });
+
 
 table.reRender();
 
@@ -140,7 +169,7 @@ function getData() {
     const data = {};
     let max_value = Number.NEGATIVE_INFINITY;
     let min_value = Number.POSITIVE_INFINITY;
-    for (let i = 1; i < table.data.rows.len; i++) {
+    for (let i = 0; i < table.data.rows.len; i++) {
         const cell = table.cell(i, 0);
         if (cell != null) {
             key = String(cell.text).trim();
@@ -161,6 +190,14 @@ function getData() {
 }
 
 function drawMap() {
+    for (let i = 1; i < 48; i++) {
+        const pref = document.querySelector("#pref_" + String(i));
+        pref.style.fill = color;
+        pref.style.fillOpacity = 0;
+        pref.style.stroke = '#000000';
+        pref.style.strokeWidth = '1px';
+        pref.style.strokeDasharray = '1 4';
+    }
     data = getData();
     for (let key in data) {
         const id = dic_pref[key];
@@ -171,17 +208,63 @@ function drawMap() {
             pref.style.fillOpacity = val;
             pref.style.stroke = '#000000';
             pref.style.strokeWidth = '2px';
+            pref.style.strokeOpacity = 1;
+            pref.style.strokeDasharray = '';
         }
     }
+    document.querySelector('#title').style.color = color;
+    changeIcon();
+    createUrl();
 }
 
-function exportImage() {
+function svgData() {
     const svg = map_area.querySelector('svg');
     const svgData = new XMLSerializer().serializeToString(svg);
     const a = document.createElement("a");
-    a.href = "data:image/svg+xml;charset=utf-8;base64," + btoa(unescape(encodeURIComponent(svgData)));
+    return "data:image/svg+xml;charset=utf-8;base64," + btoa(unescape(encodeURIComponent(svgData)));
+}
+
+function exportImage() {
+    a.href = svgData();
     a.setAttribute("download", "image.svg");
     a.dispatchEvent(new MouseEvent("click"));
 }
 
+function createUrl() {
+    const url = new URL(window.location.href);
+    const params = new URLSearchParams();
+    params.set('title', document.querySelector('#title').textContent);
+    params.set('map', document.querySelector('#selector').value);
+    params.set('color', document.querySelector('#color').value.replace(/#/, ''));
+
+    const data = [];
+    for (let i = 0; i < table.data.rows.len; i++) {
+        const col0 = table.cell(i, 0);
+        const col1 = table.cell(i, 1);
+        const col0_text = col0 ? col0.text : null;
+        const col1_text = col1 ? col1.text : null;
+        if (col0_text || col1_text) {
+            data[i] = col0_text + ';' + col1_text;
+        }
+    }
+
+    url.hash = '&' + params.toString();
+    window.location.href = url.toString() + '&data=' + data.join(':');
+}
+
+function changeIcon() {
+    const icon = document.querySelector('#icon');
+    icon.setAttribute('href', svgData());
+}
+
 document.querySelector('#dl_svg').addEventListener('click', exportImage);
+
+document.querySelector('#title').addEventListener('click', e => {
+    e.target.contentEditable = true;
+    e.target.focus();
+});
+
+document.querySelector('#title').addEventListener('focusout', e => {
+    e.target.contentEditable = false;
+    drawMap();
+});
