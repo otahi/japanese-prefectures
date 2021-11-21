@@ -107,6 +107,8 @@ const map_area = document.querySelector('#map');
 async function selectMap(map = maps[0]) {
     const res = await fetch(map.location);
 
+    selector.value = map.name;
+
     if (res.ok) {
         const svg = await res.text();
         map_area.innerHTML = svg;
