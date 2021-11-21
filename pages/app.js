@@ -248,16 +248,15 @@ function createUrl() {
         const col0_text = col0 ? col0.text : null;
         const col1_text = col1 ? col1.text : null;
         if (col0_text || col1_text) {
-            data[i] = col0_text + ';' + col1_text;
+            data[i] = (col0_text + ';' + col1_text).trim();
         }
     }
 
     url.hash = '&' + params.toString();
-    const urlString = url.toString() + '&data=' + data.join(':').trim();
+    const urlString = url.toString() + '&data=' + data.join(':');
     window.location.href = urlString;
 
-    const twitter_url = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(document.querySelector('#title').textContent) + '&url=' + encodeURIComponent(urlString);
-    console.log(twitter_url);
+    const twitter_url = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(document.querySelector('#title').textContent) + '&url=' + encodeURIComponent(url.toString() + '&data=' + encodeURIComponent(data.join(':')));
     document.querySelector('#share_twitter').addEventListener('click', () => {
         window.open(twitter_url);
     });
