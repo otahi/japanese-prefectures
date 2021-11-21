@@ -213,6 +213,10 @@ function drawMap() {
         }
     }
     document.querySelector('#title').style.color = color;
+    document.querySelectorAll('input,button').forEach(e => {
+        e.style.borderColor = color;
+        e.style.backgroundColor = color;
+    });
     changeIcon();
     createUrl();
 }
@@ -220,13 +224,13 @@ function drawMap() {
 function svgData() {
     const svg = map_area.querySelector('svg');
     const svgData = new XMLSerializer().serializeToString(svg);
-    const a = document.createElement("a");
     return "data:image/svg+xml;charset=utf-8;base64," + btoa(unescape(encodeURIComponent(svgData)));
 }
 
 function exportImage() {
+    const a = document.createElement("a");
     a.href = svgData();
-    a.setAttribute("download", "image.svg");
+    a.setAttribute("download", document.querySelector('#title').textContent + ".svg");
     a.dispatchEvent(new MouseEvent("click"));
 }
 
@@ -249,7 +253,14 @@ function createUrl() {
     }
 
     url.hash = '&' + params.toString();
-    window.location.href = url.toString() + '&data=' + data.join(':');
+    const urlString = url.toString() + '&data=' + data.join(':').trim();
+    window.location.href = urlString;
+
+    const twitter_url = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(document.querySelector('#title').textContent) + '&url=' + encodeURIComponent(urlString);
+    console.log(twitter_url);
+    document.querySelector('#share_twitter').addEventListener('click', () => {
+        window.open(twitter_url);
+    });
 }
 
 function changeIcon() {

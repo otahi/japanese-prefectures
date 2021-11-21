@@ -10,6 +10,32 @@ h1 {
     text-align: right;
 }
 
+input,
+button {
+    position: relative;
+    align-items: center;
+    border: solid 3px;
+    vertical-align: middle;
+    width: 20px;
+    height: 20px;
+    border-radius: 3px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 2px 2px 0 #cccccc;
+}
+
+#dl_svg {
+    background-image: url(dl_svg.svg);
+    vertical-align: middle;
+    font-size: 0;
+}
+
+#share_twitter {
+    background-image: url(twitter.svg);
+    vertical-align: middle;
+    font-size: 0;
+}
+
 @media screen and (min-width: 780px) {
     #container {
         width: 90%;
