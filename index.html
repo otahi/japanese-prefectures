@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja_JP">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="Cf23OwU9F3xgDzEmqm5B95GdQlB4mbJN-vIRGTkfgWo" />
+    <link rel="stylesheet" href="./pages/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/x-data-spreadsheet@1.1.5/dist/xspreadsheet.css">
+    <script src="https://unpkg.com/x-data-spreadsheet@1.1.5/dist/xspreadsheet.js"></script>
+    <link id="icon" rel="icon" href="./pages/icon.svg" type="image/svg+xml">
+
+    <title>都道府県地図グラフ</title>
+</head>
+
+<body>
+    <h1 id="title">都道府県地図グラフ</h1>
+    <div id="navi">
+        <label for="selector">Select map</label>
+        <select name="selector" id="selector"></select>
+        <label for="head">Color</label>
+        <input type="color" id="color" name="color" value="#0000FF">
+        <button id="dl_svg">Download SVG</button>
+        <button id="share_twitter">Tweet</button>
+    </div>
+
+    <div id="container">
+        <div id="table"></div>
+        <div id="map"></div>
+    </div>
+
+    <script src="./pages/app.js"></script>
+</body>
+
+</html>
