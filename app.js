@@ -251,6 +251,20 @@ function exportImage() {
     a.dispatchEvent(new MouseEvent("click"));
 }
 
+function addMeta(name, content) {
+    const meta = document.createElement('meta');
+    meta.setAttribute('name', name);
+    meta.setAttribute('content', content);
+    document.head.appendChild(meta);
+}
+
+function createTwitterCard() {
+    addMeta('twitter:card', 'summary_large_image');
+    addMeta('twitter:title', title);
+    addMeta('twitter:description', memo);
+    addMeta('twitter:image', svgData());
+}
+
 function createUrl() {
     const url = new URL(window.location.href);
     const params = new URLSearchParams();
@@ -278,6 +292,8 @@ function createUrl() {
     document.querySelector('#share_twitter').addEventListener('click', () => {
         window.open(twitter_url);
     });
+
+    createTwitterCard();
 }
 
 function changeIcon() {
