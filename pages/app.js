@@ -77,10 +77,10 @@ def_prefs_short.forEach((pref, i) => {
 });
 
 const maps = [
-    { "name": "Full", "location": "../map-full.svg" },
-    { "name": "Mobile", "location": "../map-mobile.svg" },
-    { "name": "Polygon", "location": "../map-polygon.svg" },
-    { "name": "Circle", "location": "../map-circle.svg" },
+    { "name": "Full", "location": "/map-full.svg" },
+    { "name": "Mobile", "location": "/map-mobile.svg" },
+    { "name": "Polygon", "location": "/map-polygon.svg" },
+    { "name": "Circle", "location": "/map-circle.svg" },
 ];
 const map_names = { "Full": 0, "Mobile": 1, "Polygon": 2, "Circle": 3 };
 const selector = document.querySelector('#selector');
