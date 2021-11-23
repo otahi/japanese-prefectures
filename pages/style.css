@@ -5,6 +5,13 @@ h1 {
     cursor: url(edit.svg), auto;
 }
 
+#memo {
+    position: relative;
+    text-align: center;
+    font-size: 0.7em;
+    cursor: url(edit.svg), auto;
+}
+
 #navi {
     position: relative;
     text-align: right;

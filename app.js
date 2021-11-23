@@ -149,6 +149,11 @@ if (title.length > 0) {
     document.querySelector('#title').innerHTML = title;
 }
 
+const memo = sanitize(hash.get('memo'));
+if (memo.length > 0) {
+    document.querySelector('#memo').innerHTML = memo;
+}
+
 const params = hash.get('data') || '';
 if (params.length > 0) {
     params.split(':').forEach((param, i) => {
@@ -212,6 +217,7 @@ function drawMap() {
     }
 
     document.querySelector('#title').style.color = color;
+    document.querySelector('#memo').style.color = color;
     document.querySelectorAll('input,button').forEach(e => {
         e.style.borderColor = color;
         e.style.backgroundColor = color;
@@ -249,6 +255,7 @@ function createUrl() {
     const url = new URL(window.location.href);
     const params = new URLSearchParams();
     params.set('title', document.querySelector('#title').textContent);
+    params.set('memo', document.querySelector('#memo').textContent);
     params.set('map', document.querySelector('#selector').value);
     params.set('color', document.querySelector('#color').value.replace(/#/, ''));
 
@@ -286,6 +293,16 @@ document.querySelector('#title').addEventListener('click', e => {
 });
 
 document.querySelector('#title').addEventListener('focusout', e => {
+    e.target.contentEditable = false;
+    drawMap();
+});
+
+document.querySelector('#memo').addEventListener('click', e => {
+    e.target.contentEditable = true;
+    e.target.focus();
+});
+
+document.querySelector('#memo').addEventListener('focusout', e => {
     e.target.contentEditable = false;
     drawMap();
 });
